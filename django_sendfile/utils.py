@@ -46,12 +46,11 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
     if not os.path.exists(filename):
         raise Http404('"%s" does not exist' % filename)
 
-    guessed_mimetype, guessed_encoding = guess_type(filename)
     if mimetype is None:
-        if guessed_mimetype:
-            mimetype = guessed_mimetype
-        else:
-            mimetype = 'application/octet-stream'
+        guessed_mimetype, guessed_encoding = guess_type(filename)
+        mimetype = guessed_mimetype or 'application/octet-stream'
+        if encoding is None:
+            encoding = guessed_encoding
 
     response = _sendfile(request, filename, mimetype=mimetype, encoding=encoding)
 
@@ -81,9 +80,6 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
     mimetype_header = 'Content-Type'
     if response.get(mimetype_header) is None:
         response[mimetype_header] = mimetype
-
-    if not encoding:
-        encoding = guessed_encoding
 
     content_header = 'Content-Encoding'
     if encoding and not response.get(content_header) is None:
