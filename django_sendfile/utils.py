@@ -53,7 +53,7 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
         else:
             mimetype = 'application/octet-stream'
 
-    response = _sendfile(request, filename, mimetype=mimetype)
+    response = _sendfile(request, filename, mimetype=mimetype, encoding=encoding)
 
     # Suggest to view (inline) or download (attachment) the file
     parts = ['attachment' if attachment else 'inline']
