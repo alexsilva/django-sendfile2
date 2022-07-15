@@ -1,3 +1,4 @@
+# coding=utf-8
 from functools import lru_cache
 from importlib import import_module
 from mimetypes import guess_type
@@ -5,6 +6,7 @@ import os.path
 import unicodedata
 
 from django.conf import settings
+from django.http import HttpResponseNotModified
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from django.utils.encoding import force_str
@@ -53,6 +55,12 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
             encoding = guessed_encoding
 
     response = _sendfile(request, filename, mimetype=mimetype, encoding=encoding)
+
+    # https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpResponseNotModified
+    # The constructor doesn’t take any arguments and no content should be added to this response.
+    # Use this to designate that a page hasn’t been modified since the user’s last request (status code 304).
+    if isinstance(response, HttpResponseNotModified):
+        return response
 
     # Suggest to view (inline) or download (attachment) the file
     parts = ['attachment' if attachment else 'inline']
