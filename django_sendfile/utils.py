@@ -92,14 +92,10 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
     if not filepath_obj.exists():
         raise Http404('"%s" does not exist' % filepath_obj)
 
-    guessed_mimetype, guessed_encoding = guess_type(str(filepath_obj))
-    if mimetype is None:
-        if guessed_mimetype:
-            mimetype = guessed_mimetype
-        else:
-            mimetype = 'application/octet-stream'
-    if encoding is None:
-        encoding = guessed_encoding
+    if mimetype is None or encoding is None:
+        guessed_mimetype, guessed_encoding = guess_type(str(filepath_obj))
+        mimetype = mimetype or guessed_mimetype or 'application/octet-stream'
+        encoding = encoding or guessed_encoding
 
     response = _sendfile(request, filepath_obj, mimetype=mimetype, encoding=encoding)
 
