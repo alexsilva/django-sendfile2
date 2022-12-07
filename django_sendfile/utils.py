@@ -130,7 +130,10 @@ def sendfile(request, filename, attachment=False, attachment_filename=None,
 
     mimetype_header = 'Content-Type'
     if response.get(mimetype_header) is None:
-        response[mimetype_header] = mimetype
+        _mimetype = mimetype
+        if encoding and _mimetype.lower().startswith("text"):
+            _mimetype += "; charset=%s" % encoding
+        response[mimetype_header] = _mimetype
 
     content_header = 'Content-Encoding'
     if encoding and not response.get(content_header) is None:
