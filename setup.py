@@ -17,7 +17,7 @@ setup(
     url='https://github.com/moggers87/django-sendfile2',
     license='BSD',
 
-    install_requires=['django>=3,<4'],
+    install_requires=['django>=3,<5'],
     packages=['django_sendfile', 'django_sendfile.backends'],
     extras_require={
         "docs": [
